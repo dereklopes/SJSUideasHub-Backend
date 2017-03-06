@@ -77,9 +77,9 @@ class AuthUserUserPermissions(models.Model):
 
 
 class Comment(models.Model):
-    commentid = models.AutoField(db_column='commentId', primary_key=True)  # Field name made lowercase.
-    ideaid = models.ForeignKey('Idea', models.DO_NOTHING, db_column='ideaId')  # Field name made lowercase.
-    userid = models.ForeignKey('User', models.DO_NOTHING, db_column='userId')  # Field name made lowercase.
+    commentId = models.AutoField(db_column='commentId', primary_key=True)  # Field name made lowercase.
+    ideaId = models.ForeignKey('Idea', models.DO_NOTHING, db_column='ideaId')  # Field name made lowercase.
+    userId = models.ForeignKey('User', models.DO_NOTHING, db_column='userId')  # Field name made lowercase.
     comment = models.CharField(max_length=40)
 
     def __str__(self):
@@ -135,8 +135,8 @@ class DjangoSession(models.Model):
 
 
 class Idea(models.Model):
-    ideaid = models.AutoField(db_column='ideaId', primary_key=True)  # Field name made lowercase.
-    userid = models.ForeignKey('User', models.DO_NOTHING, db_column='userId')  # Field name made lowercase.
+    ideaId = models.AutoField(db_column='ideaId', primary_key=True)  # Field name made lowercase.
+    userId = models.ForeignKey('User', models.DO_NOTHING, db_column='userId')  # Field name made lowercase.
     title = models.CharField(max_length=250)
     content = models.TextField()
     date = models.DateField()
@@ -152,7 +152,7 @@ class Idea(models.Model):
 
 
 class User(models.Model):
-    userid = models.AutoField(db_column='userId', primary_key=True)  # Field name made lowercase.
+    userId = models.AutoField(db_column='userId', primary_key=True)  # Field name made lowercase.
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
     email = models.CharField(max_length=100)

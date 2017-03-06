@@ -8,7 +8,7 @@ from .models import User, Idea, Comment
 from .serializers import IdeaSerializers, UserSerializers, CommnentSerializers
 from django.http import HttpResponse
 from rest_framework import generics
-from filters import CommentFilter
+from filters import CommentFilter, UserFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -22,6 +22,7 @@ class JSONResponse(HttpResponse):
         content = JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
+
 
 
 #list all ideas
@@ -47,6 +48,7 @@ class IdeasList(generics.ListCreateAPIView):
 
 
 #comment/
+#comment/?idea_id=..
 class CommnentList(generics.ListCreateAPIView):
     # list all ideas available
 
@@ -54,16 +56,14 @@ class CommnentList(generics.ListCreateAPIView):
     serializer_class = CommnentSerializers
     filter_class = CommentFilter(generics.ListAPIView)
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('ideaid', )
-
+    filter_fields = ('ideaId' )  # filter the filed ideaId (in model)
 
     def get_queryset(self):
         queryset = Comment.objects.all()
-        ideaid = self.request.query_params.get('idea_id', None)
+        ideaid = self.request.query_params.get('idea_id', None)  #?idea_id=...
         if ideaid is not None:
-            queryset = queryset.filter(ideaid=ideaid)
+            queryset = queryset.filter(ideaId=ideaid)
         return queryset
-
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -80,11 +80,22 @@ class CommnentList(generics.ListCreateAPIView):
 
 
 #user/
+#user/?user_id=...
 class UserList(generics.ListCreateAPIView):
     # list all ideas available
 
     queryset = User.objects.all()
     serializer_class = UserSerializers
+    filter_class = UserFilter(generics.ListAPIView)
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('userId')  # filter the filed userId (in model)
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        userid = self.request.query_params.get('user_id', None)  # ?user_id=...
+        if userid is not None:
+            queryset = queryset.filter(userId=userid)
+        return queryset
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
