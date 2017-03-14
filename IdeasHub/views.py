@@ -32,6 +32,43 @@ class IdeasList(generics.ListCreateAPIView):
 
     queryset = Idea.objects.all()
     serializer_class = IdeaSerializers
+    filter_class = CommentFilter(generics.ListAPIView)
+    filter_backends = (DjangoFilterBackend,)
+
+    # query:
+    # startIndex=x -- ideaId >= x
+    # endIndex=x -- ideaId <= x
+    # category=string -- category
+    # sort=likes -- descending
+    # sort=newest -- descending
+    # sort=oldest -- ascending
+    # userId = x -- all ideas of user x
+    def get_queryset(self):
+        queryset = Idea.objects.all()
+        startindex = self.request.query_params.get('startIndex', None)
+        endindex = self.request.query_params.get('endIndex', None)
+        category = self.request.query_params.get('category', None)
+        sort = self.request.query_params.get('sort',None)
+        userId = self.request.query_params.get('userId', None)
+        if category is not None:
+            queryset = queryset.filter(category__icontains=category) # case-insensitive
+        if startindex and endindex is not None:
+            queryset = queryset.filter(ideaId__range=(startindex, endindex))
+        elif startindex is not None:
+            queryset = queryset.filter(ideaId__gte=startindex)
+        elif endindex is not None:
+            queryset = queryset.filter(ideaId__lte=startindex)
+        if sort is not None:
+            if sort == "likes":
+                queryset = queryset.order_by("-likes") # sort by likes
+            if sort == "newest":
+                queryset = queryset.order_by("-ideaId") # sort by newest
+            if sort == "oldest":
+                queryset = queryset.order_by("ideaId")  # sort by oldest
+        if userId is not None:
+            queryset = queryset.filter(userId__exact=userId)
+
+        return queryset
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -60,7 +97,7 @@ class CommnentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Comment.objects.all()
-        ideaid = self.request.query_params.get('idea_id', None)  #?idea_id=...
+        ideaid = self.request.query_params.get('ideaId', None)  #?idea_id=...
         if ideaid is not None:
             queryset = queryset.filter(ideaId=ideaid)
         return queryset
@@ -92,7 +129,7 @@ class UserList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = User.objects.all()
-        userid = self.request.query_params.get('user_id', None)  # ?user_id=...
+        userid = self.request.query_params.get('userId', None)  # ?user_id=...
         if userid is not None:
             queryset = queryset.filter(userId=userid)
         return queryset
