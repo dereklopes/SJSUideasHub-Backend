@@ -10,6 +10,8 @@ from django.http import HttpResponse
 from rest_framework import generics
 from filters import CommentFilter, UserFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
+
 
 
 
@@ -24,7 +26,6 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-
 #list all ideas
 #ideas/
 class IdeasList(generics.ListCreateAPIView):
@@ -34,6 +35,7 @@ class IdeasList(generics.ListCreateAPIView):
     serializer_class = IdeaSerializers
     filter_class = CommentFilter(generics.ListAPIView)
     filter_backends = (DjangoFilterBackend,)
+    pagination_class = LimitOffsetPagination
 
     # query:
     # startIndex=x -- ideaId >= x
