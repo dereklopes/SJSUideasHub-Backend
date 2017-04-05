@@ -132,8 +132,15 @@ class UserList(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = User.objects.all()
         userid = self.request.query_params.get('userId', None)  # ?user_id=...
+        username=self.request.query_params.get('username', None) #?username=
+        password=self.request.query_params.get('password',None) #?password=
         if userid is not None:
             queryset = queryset.filter(userId=userid)
+
+        if username and password is not None:
+            queryset = queryset.filter(username__exact=username, password__exact=password)
+        else:
+            queryset = None
         return queryset
 
     def get(self, request, *args, **kwargs):
