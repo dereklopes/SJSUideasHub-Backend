@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^ideas/', views.IdeasList.as_view()),
     url(r'^comments/', views.CommnentList.as_view()),
-    url(r'^user/', views.UserList.as_view())
+    #url(r'^user/', views.UserList.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

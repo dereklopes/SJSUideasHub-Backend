@@ -1,25 +1,16 @@
 import django_filters
-from models import Comment, User, Idea
+
+from IdeasHub.models import Comment, Idea
 
 
 class CommentFilter(django_filters.FilterSet):
 
-    ideaid = django_filters.NumberFilter(name="ideaId", lookup_type='exact')  # name: of the filter
+    ideaId = django_filters.NumberFilter(name="ideaId", lookup_type='exact')  # name: of the filter
 
 
     class Meta:
         model = Comment
-        fields = ["ideaId", ]
-
-
-class UserFilter(django_filters.FilterSet):
-
-    userid = django_filters.NumberFilter(name="userId", lookup_type='exact')  # name: of the filter
-
-
-    class Meta:
-        model = Comment
-        fields = ["userId", ]
+        fields = ["ideaId"]
 
 
 class IdeaFilter(django_filters.FilterSet):
@@ -27,8 +18,9 @@ class IdeaFilter(django_filters.FilterSet):
     startIndex = django_filters.NumberFilter(name="ideaId", lookup_type='gte')
     toIndex = django_filters.NumberFilter(name="ideaId", lookup_type='lte')
     category = django_filters.CharFilter(name="category", lookup_type="business")
-
+    author = django_filters.CharFilter(name="author", lookup_type="exact")
+    ideaId = django_filters.NumberFilter(name="ideaId", lookup_type='exact')
 
     class Meta:
         model = Idea
-        fields = ["ideaId", "category"]
+        fields = ["ideaId", "category", "author"]

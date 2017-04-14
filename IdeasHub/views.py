@@ -5,9 +5,9 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 
-from filters import CommentFilter, UserFilter
-from .models import User, Idea, Comment
-from .serializers import IdeaSerializers, UserSerializers, CommnentSerializers
+from filters import CommentFilter
+from .models import Idea, Comment
+from .serializers import IdeaSerializers, CommnentSerializers
 
 
 class JSONResponse(HttpResponse):
@@ -31,7 +31,7 @@ class IdeasList(generics.ListCreateAPIView):
     filter_class = CommentFilter(generics.ListAPIView)
     filter_backends = (DjangoFilterBackend,)
     pagination_class = LimitOffsetPagination
-    APIKEY = "8S9F90R0A73H9F" # apikey used to retrieve data
+
     # query:
     # startIndex=x -- ideaId >= x
     # endIndex=x -- ideaId <= x
@@ -42,32 +42,29 @@ class IdeasList(generics.ListCreateAPIView):
     # userId = x -- all ideas of user x
     def get_queryset(self):
         queryset = Idea.objects.all()
-        key = self.request.query_params.get('key',None)
         startindex = self.request.query_params.get('startIndex', None)
         endindex = self.request.query_params.get('endIndex', None)
         category = self.request.query_params.get('category', None)
         sort = self.request.query_params.get('sort', None)
-        userId = self.request.query_params.get('userId', None)
-        if key is not None and key == self.APIKEY:
-            if category is not None:
-                queryset = queryset.filter(category__icontains=category)  # case-insensitive
-            if startindex and endindex is not None:
-                queryset = queryset.filter(ideaId__range=(startindex, endindex))
-            elif startindex is not None:
-                queryset = queryset.filter(ideaId__gte=startindex)
-            elif endindex is not None:
-                queryset = queryset.filter(ideaId__lte=startindex)
-            if sort is not None:
-                if sort == "likes":
-                    queryset = queryset.order_by("-likes")  # sort by likes
-                if sort == "newest":
-                    queryset = queryset.order_by("-ideaId")  # sort by newest
-                if sort == "oldest":
-                    queryset = queryset.order_by("ideaId")  # sort by oldest
-            if userId is not None:
-                queryset = queryset.filter(userId__exact=userId)
-        else:
-            queryset=None
+        author = self.request.query_params.get('author', None)
+
+        if category is not None:
+            queryset = queryset.filter(category__icontains=category)  # case-insensitive
+        if startindex and endindex is not None:
+            queryset = queryset.filter(ideaId__range=(startindex, endindex))
+        elif startindex is not None:
+            queryset = queryset.filter(ideaId__gte=startindex)
+        elif endindex is not None:
+            queryset = queryset.filter(ideaId__lte=startindex)
+        if sort is not None:
+            if sort == "likes":
+                queryset = queryset.order_by("-likes")  # sort by likes
+            if sort == "newest":
+                queryset = queryset.order_by("-ideaId")  # sort by newest
+            if sort == "oldest":
+                queryset = queryset.order_by("ideaId")  # sort by oldest
+            if author is not None:
+                queryset = queryset.filter(author__exact=author)
 
         return queryset
 
@@ -94,18 +91,15 @@ class CommnentList(generics.ListCreateAPIView):
     serializer_class = CommnentSerializers
     filter_class = CommentFilter(generics.ListAPIView)
     filter_backends = (DjangoFilterBackend,)
-    APIKEY = "8S9F90R0A73H9F"# apikey used to retrieve data
 
     def get_queryset(self):
         queryset = Comment.objects.all()
 
-        key = self.request.query_params.get('key', None)
         ideaid = self.request.query_params.get('ideaId', None)  # ?idea_id=...
-        if key is not None and key == self.APIKEY:
-            if ideaid is not None:
-                queryset = queryset.filter(ideaId=ideaid)
-        else:
-            queryset=None
+
+        if ideaid is not None:
+            queryset = queryset.filter(ideaId=ideaid)
+
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -122,46 +116,3 @@ class CommnentList(generics.ListCreateAPIView):
         return JSONResponse(serializer.errors, status=400)
 
 
-# user/
-# user/?user_id=...
-class UserList(generics.ListCreateAPIView):
-    # list all ideas available
-
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializers
-    filter_class = UserFilter(generics.ListAPIView)
-    filter_backends = (DjangoFilterBackend,)
-    APIKEY = "77JGJS73JZ9EU3B1JEJC"
-
-    def get_queryset(self):
-        queryset = User.objects.all()
-        # APIkey user for login
-
-        key = self.request.query_params.get('key', None)
-        userid = self.request.query_params.get('userId', None)  # ?user_id=...
-        username = self.request.query_params.get('username', None)  # ?username=
-        if key is not None and key == self.APIKEY:
-            if userid is not None:
-                queryset = queryset.filter(userId=userid)
-
-            if username is not None:
-                queryset = queryset.filter(username__exact=username)
-            else:
-                queryset = None
-        else:
-            queryset = None
-        return queryset
-
-    def get(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = UserSerializers(queryset, many=True)
-        return JSONResponse(serializer.data)
-
-    def post(self, request, *args, **kwargs):
-        data = JSONParser().parse(request)
-        serializer = UserSerializers(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
