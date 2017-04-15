@@ -77,14 +77,13 @@ class AuthUserUserPermissions(models.Model):
 
 
 class Comment(models.Model):
-    commentId = models.AutoField(db_column='commentId', primary_key=True)  # Field name made lowercase.
-    ideaId = models.ForeignKey('Idea', models.DO_NOTHING, db_column='ideaId')  # Field name made lowercase.
-    userId = models.ForeignKey('User', models.DO_NOTHING, db_column='userId')  # Field name made lowercase.
-    comment = models.CharField(max_length=40)
+    commentid = models.AutoField(db_column='commentId', primary_key=True)  # Field name made lowercase.
+    ideaid = models.ForeignKey('Idea', models.DO_NOTHING, db_column='ideaId')  # Field name made lowercase.
+    comment = models.CharField(max_length=200)
+    author = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return self.comment
-
+        return  self.ideaid
     class Meta:
         managed = False
         db_table = 'comment'
@@ -136,31 +135,15 @@ class DjangoSession(models.Model):
 
 class Idea(models.Model):
     ideaId = models.AutoField(db_column='ideaId', primary_key=True)  # Field name made lowercase.
-    userId = models.ForeignKey('User', models.DO_NOTHING, db_column='userId')  # Field name made lowercase.
     title = models.CharField(max_length=250)
     content = models.TextField()
     date = models.DateField()
     category = models.CharField(max_length=50)
-    likes = models.IntegerField(default=0)
+    likes = models.IntegerField()
+    author = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.title
-
+        return  self.title
     class Meta:
         managed = False
         db_table = 'idea'
-
-
-class User(models.Model):
-    userId = models.AutoField(db_column='userId', primary_key=True)  # Field name made lowercase.
-    username = models.CharField(max_length=20)
-    password = models.CharField(max_length=20)
-    email = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-
-    def __str__(self):
-        return self.username
-
-    class Meta:
-        managed = False
-        db_table = 'user'
