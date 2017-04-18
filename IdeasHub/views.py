@@ -99,11 +99,10 @@ class CommnentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Comment.objects.all()
-
-        ideaid = self.request.query_params.get('ideaId', None)  # ?idea_id=...
+        ideaid = self.request.query_params.get('ideaid', None)  # ?idea_id=...
 
         if ideaid is not None:
-            queryset = queryset.filter(ideaId=ideaid)
+            queryset = queryset.filter(ideaId__exact=ideaid)
 
         return queryset
 
