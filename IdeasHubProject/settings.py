@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'IdeasHubProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ideashub',
+        'NAME': 'derkle$ideashub',
         'USER': 'root',
         'PASSWORD': '123'
     }

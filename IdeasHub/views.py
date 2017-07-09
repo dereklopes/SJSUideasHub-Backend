@@ -9,6 +9,8 @@ from filters import CommentFilter
 from .models import Idea, Comment
 from .serializers import IdeaSerializers, CommnentSerializers
 
+from oauth2client import client, crypt
+
 
 class JSONResponse(HttpResponse):
     """
@@ -114,5 +116,22 @@ class CommnentList(generics.ListCreateAPIView):
             serializer.save()
             return JSONResponse(serializer.data, status=201)
         return JSONResponse(serializer.errors, status=400)
+
+
+# authorize/?userId=&token=
+def AuthorizeToken(request):
+    if request.method == 'POST':
+        token = request.POST['token']
+        userid = request.POST['userId']
+        if token and userid:
+            try:
+                # idinfo = {'userId': userid, 'token': token}
+                idinfo = client.verify_id_token(token, userid)
+                return JSONResponse(idinfo, status=200)
+            except crypt.AppIdentityError:
+                # Invalid token
+                return JSONResponse("Invalid token", status=400)
+    elif request.method == 'GET':
+        return JSONResponse("Invalid request", status=400)
 
 
