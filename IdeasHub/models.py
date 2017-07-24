@@ -78,7 +78,8 @@ class AuthUserUserPermissions(models.Model):
 
 class Comment(models.Model):
     commentid = models.AutoField(db_column='commentId', primary_key=True)  # Field name made lowercase.
-    ideaid = models.ForeignKey('Idea', models.DO_NOTHING, db_column='ideaId')  # Field name made lowercase.
+
+    ideaId = models.ForeignKey('Idea', models.DO_NOTHING, db_column='ideaId')  # Field name made lowercase.
     comment = models.CharField(max_length=200)
     author = models.CharField(max_length=100, blank=True, null=True)
 

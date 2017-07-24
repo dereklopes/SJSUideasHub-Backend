@@ -1,4 +1,6 @@
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.pagination import LimitOffsetPagination
@@ -17,6 +19,8 @@ class JSONResponse(HttpResponse):
     An HttpResponse that renders its content into JSON.
     """
 
+
+    @csrf_exempt
     def __init__(self, data, **kwargs):
         content = JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
@@ -25,6 +29,7 @@ class JSONResponse(HttpResponse):
 
 # list all ideas
 # ideas/
+@method_decorator(csrf_exempt, name='dispatch')
 class IdeasList(generics.ListCreateAPIView):
     # list all ideas available
 
@@ -75,6 +80,7 @@ class IdeasList(generics.ListCreateAPIView):
         serializer = IdeaSerializers(queryset, many=True)
         return JSONResponse(serializer.data)
 
+    @csrf_exempt
     def post(self, request, *args, **kwargs):
         data = JSONParser().parse(request)
         serializer = IdeaSerializers(data=data)
@@ -97,10 +103,10 @@ class CommnentList(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = Comment.objects.all()
 
-        ideaid = self.request.query_params.get('ideaId', None)  # ?idea_id=...
+        ideaid = self.request.query_params.get('ideaid', None)  # ?idea_id=...
 
         if ideaid is not None:
-            queryset = queryset.filter(ideaId=ideaid)
+            queryset = queryset.filter(ideaId__exact=ideaid)
 
         return queryset
 
@@ -109,6 +115,7 @@ class CommnentList(generics.ListCreateAPIView):
         serializer = CommnentSerializers(queryset, many=True)
         return JSONResponse(serializer.data)
 
+    @csrf_exempt
     def post(self, request, *args, **kwargs):
         data = JSONParser().parse(request)
         serializer = CommnentSerializers(data=data)
@@ -133,5 +140,3 @@ def AuthorizeToken(request):
                 return JSONResponse("Invalid token", status=400)
     elif request.method == 'GET':
         return JSONResponse("Invalid request", status=400)
-
-
