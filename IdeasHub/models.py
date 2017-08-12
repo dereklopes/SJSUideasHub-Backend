@@ -76,6 +76,17 @@ class AuthUserUserPermissions(models.Model):
         unique_together = (('user', 'permission'),)
 
 
+class Category(models.Model):
+    title = models.CharField(max_length=32, db_column='title')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        managed = True
+        db_table = 'categories'
+
+
 class Comment(models.Model):
     commentid = models.AutoField(db_column='commentId', primary_key=True)  # Field name made lowercase.
 
@@ -84,7 +95,8 @@ class Comment(models.Model):
     author = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return  self.ideaid
+        return self.ideaId
+
     class Meta:
         managed = False
         db_table = 'comment'
@@ -144,7 +156,8 @@ class Idea(models.Model):
     author = models.CharField(max_length=100)
 
     def __str__(self):
-        return  self.title
+        return self.title
+
     class Meta:
         managed = False
         db_table = 'idea'

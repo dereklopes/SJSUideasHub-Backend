@@ -8,8 +8,8 @@ from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 
 from filters import CommentFilter
-from .models import Idea, Comment
-from .serializers import IdeaSerializers, CommnentSerializers
+from .models import Idea, Comment, Category
+from .serializers import IdeaSerializers, CommentSerializers, CategorySerializer
 
 from oauth2client import client, crypt
 
@@ -96,7 +96,7 @@ class CommnentList(generics.ListCreateAPIView):
     # list all ideas available
 
     queryset = Comment.objects.all()
-    serializer_class = CommnentSerializers
+    serializer_class = CommentSerializers
     filter_class = CommentFilter(generics.ListAPIView)
     filter_backends = (DjangoFilterBackend,)
 
@@ -112,13 +112,13 @@ class CommnentList(generics.ListCreateAPIView):
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = CommnentSerializers(queryset, many=True)
+        serializer = CommentSerializers(queryset, many=True)
         return JSONResponse(serializer.data)
 
     @csrf_exempt
     def post(self, request, *args, **kwargs):
         data = JSONParser().parse(request)
-        serializer = CommnentSerializers(data=data)
+        serializer = CommentSerializers(data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data, status=201)
@@ -140,3 +140,19 @@ def AuthorizeToken(request):
                 return JSONResponse("Invalid token", status=400)
     elif request.method == 'GET':
         return JSONResponse("Invalid request", status=400)
+
+
+# categories/
+def CategoriesList(request):
+    if request.method == 'GET':
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return JSONResponse(serializer.data)
+
+    if request.method == 'POST':
+        category = Category()
+        category.title = request.GET.get('title', None)
+        if category.title:
+            category.save()
+            return JSONResponse('Created category ' + category.title, status=201)
+        return JSONResponse('Unable to create category', status=400)
