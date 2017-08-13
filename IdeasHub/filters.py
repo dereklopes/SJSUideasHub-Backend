@@ -4,9 +4,7 @@ from IdeasHub.models import Comment, Idea
 
 
 class CommentFilter(django_filters.FilterSet):
-
     ideaId = django_filters.NumberFilter(name="ideaId", lookup_type='exact')  # name: of the filter
-
 
     class Meta:
         model = Comment
@@ -14,7 +12,6 @@ class CommentFilter(django_filters.FilterSet):
 
 
 class IdeaFilter(django_filters.FilterSet):
-
     startIndex = django_filters.NumberFilter(name="ideaId", lookup_type='gte')
     toIndex = django_filters.NumberFilter(name="ideaId", lookup_type='lte')
     category = django_filters.CharFilter(name="category", lookup_type="business")

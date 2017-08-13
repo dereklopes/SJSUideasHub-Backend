@@ -19,7 +19,6 @@ class JSONResponse(HttpResponse):
     An HttpResponse that renders its content into JSON.
     """
 
-
     @csrf_exempt
     def __init__(self, data, **kwargs):
         content = JSONRenderer().render(data)
