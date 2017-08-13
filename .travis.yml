@@ -4,6 +4,9 @@ python:
 # Django environment
 environment:
   - DJANGO_VERSION=1.9
+# Create db
+before_install:
+  - mysql -e 'CREATE DATABASE derkle$ideashub;'
 # command to install dependencies
 install: "pip install -r requirements.txt"
 # start required services
