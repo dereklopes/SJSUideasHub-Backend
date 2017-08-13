@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Idea, Comment
+from .models import Idea, Comment, Category
 
 
 class IdeaSerializers(serializers.ModelSerializer):
@@ -9,8 +9,13 @@ class IdeaSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
 
-class CommnentSerializers(serializers.ModelSerializer):
+
+class CommentSerializers(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
