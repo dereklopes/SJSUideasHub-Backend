@@ -14,7 +14,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'derkle$ideashub',
-        'USER': 'derek',
+        'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost'
     }
