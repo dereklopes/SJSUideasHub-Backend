@@ -98,7 +98,7 @@ class Comment(models.Model):
         return self.ideaId
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'comment'
 
 
@@ -159,5 +159,5 @@ class Idea(models.Model):
         return self.title
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'idea'
