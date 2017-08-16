@@ -4,7 +4,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from django.http import HttpRequest
 
-from views import AuthorizeToken, CategoriesList
+from .views import AuthorizeToken, CategoriesList
 
 
 class AuthTokenTestCase(TestCase):
