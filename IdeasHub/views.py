@@ -7,7 +7,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 
-from filters import CommentFilter
+from .filters import CommentFilter
 from .models import Idea, Comment, Category
 from .serializers import IdeaSerializers, CommentSerializers, CategorySerializer
 

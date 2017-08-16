@@ -2,7 +2,7 @@
 Local dev settings for Derek Lopes
 """
 
-from base_settings import *
+from .base_settings import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

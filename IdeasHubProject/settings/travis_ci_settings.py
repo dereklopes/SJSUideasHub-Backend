@@ -1,7 +1,7 @@
 """
 Settings used for TravisCI testings.
 """
-from base_settings import *
+from .base_settings import *
 
 DEBUG = True
 
