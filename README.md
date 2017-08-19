@@ -7,3 +7,9 @@ Master Branch: [![Build Status](https://travis-ci.org/dereklopes/SJSUideasHub-Ba
 This is the repository for the SJSU ideasHub backend server.
 
 For more information on the code and how to contribute, check out the [Wiki](https://github.com/dereklopes/SJSUideasHub-Backend/wiki).
+
+---------------------------------------------------------------------------------------------------------------
+
+Related Projects:
+
+[iOS Frontend](https://github.com/dereklopes/SJSUideasHub-iOS) | [Android Frontend](https://github.com/jennifernghi/SVCE)
