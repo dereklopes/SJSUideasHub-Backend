@@ -48,6 +48,7 @@ class IdeasList(generics.ListCreateAPIView):
     # userId = x -- all ideas of user x
     def get_queryset(self):
         queryset = Idea.objects.all()
+        ideaid = self.request.query_params.get('ideaid', None)
         startindex = self.request.query_params.get('startIndex', None)
         endindex = self.request.query_params.get('endIndex', None)
         category = self.request.query_params.get('category', None)
@@ -62,6 +63,8 @@ class IdeasList(generics.ListCreateAPIView):
             queryset = queryset.filter(ideaId__gte=startindex)
         elif endindex is not None:
             queryset = queryset.filter(ideaId__lte=startindex)
+        elif ideaid is not None:
+            queryset = queryset.filter(ideaId__range=(ideaid, ideaid))
         if sort is not None:
             if sort == "likes":
                 queryset = queryset.order_by("-likes")  # sort by likes
