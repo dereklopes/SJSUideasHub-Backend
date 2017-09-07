@@ -79,9 +79,6 @@ class AuthUserUserPermissions(models.Model):
 class Category(models.Model):
     title = models.CharField(max_length=32, db_column='title')
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         managed = True
         db_table = 'categories'
@@ -93,9 +90,6 @@ class Comment(models.Model):
     ideaId = models.ForeignKey('Idea', models.DO_NOTHING, db_column='ideaId')  # Field name made lowercase.
     comment = models.CharField(max_length=200)
     author = models.CharField(max_length=100, blank=True, null=True)
-
-    def __str__(self):
-        return self.ideaId
 
     class Meta:
         managed = True
@@ -154,9 +148,6 @@ class Idea(models.Model):
     category = models.CharField(max_length=50)
     likes = models.IntegerField()
     author = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.title
 
     class Meta:
         managed = True
