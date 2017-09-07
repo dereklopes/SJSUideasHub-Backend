@@ -62,7 +62,7 @@ class IdeasList(generics.ListCreateAPIView):
         elif startindex is not None:
             queryset = queryset.filter(ideaId__gte=startindex)
         elif endindex is not None:
-            queryset = queryset.filter(ideaId__lte=startindex)
+            queryset = queryset.filter(ideaId__lte=endindex)
         elif ideaid is not None:
             queryset = queryset.filter(ideaId__range=(ideaid, ideaid))
         if sort is not None:
@@ -74,6 +74,8 @@ class IdeasList(generics.ListCreateAPIView):
                 queryset = queryset.order_by("ideaId")  # sort by oldest
             if author is not None:
                 queryset = queryset.filter(author__exact=author)
+        elif author is not None:
+            queryset = queryset.filter(author__exact=author)
 
         return queryset
 
