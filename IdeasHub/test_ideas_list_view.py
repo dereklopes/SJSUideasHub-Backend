@@ -66,8 +66,6 @@ class IdeasTestCase(TestCase):
         return json.loads(response.content)
 
     def check_sorted_json_response(self, sort_by, attribute, comparison):
-        if comparison is None:
-            comparison = self.assertLessEqual
 
         response_json = self.get_json_response('ideas/?sort=' + sort_by)
 
