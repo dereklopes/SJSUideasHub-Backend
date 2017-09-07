@@ -30,7 +30,6 @@ class IdeasTestCase(TestCase):
             IdeasList.as_view()(request)
 
     def test_idea_post(self):
-        # go right
         request = self.factory.post('ideas/', data=json.dumps(self.test_idea), content_type='application/json')
 
         response = IdeasList.as_view()(request)
@@ -39,12 +38,6 @@ class IdeasTestCase(TestCase):
         response_json = json.loads(response.content)
         for key, value in self.test_idea.items():
             self.assertEqual(response_json[key], value, 'Did not post correct information')
-
-        # go wrong - no parameters
-        self.test_idea.pop('title')
-        request = self.factory.post('ideas/', data=json.dumps(self.test_idea), content_type='application/json')
-        response = IdeasList.as_view()(request)
-        self.assertEqual(response.status_code, 400, 'Posted idea without parameters')
 
     def test_idea_get_all(self):
         request = self.factory.get('ideas/')
@@ -118,3 +111,10 @@ class IdeasTestCase(TestCase):
         response_json = self.get_json_response('ideas/?category=' + self.test_idea['category'])
         for idea in response_json:
             self.assertEqual(idea['category'], self.test_idea['category'], 'Ideas are not filtered by category')
+
+    def test_idea_post_fail(self):
+        # go wrong - no parameters
+        self.test_idea.pop('title')
+        request = self.factory.post('ideas/', data=json.dumps(self.test_idea), content_type='application/json')
+        response = IdeasList.as_view()(request)
+        self.assertEqual(response.status_code, 400, 'Posted idea without parameters')
