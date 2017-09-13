@@ -11,7 +11,6 @@ class IdeasTestCase(TestCase):
         'author': 'TEST-author0',
         'category': 'TEST-category0',
         'content': 'TEST-content',
-        'likes': 4,
         'date': '2017-01-01'
     }
     factory = RequestFactory()
@@ -22,7 +21,6 @@ class IdeasTestCase(TestCase):
         # post 3 ideas as set up with different info
         idea = cls.test_idea
         for i in range(0, 3):
-            idea['likes'] += 1
             idea['date'] = '2017-01-' + str(int(idea['date'][9:10]) + 1).zfill(2)
             idea['category'] = 'TEST-category' + str(int(idea['category'][13]) + 1)
             idea['author'] = 'TEST-author' + str(int(idea['author'][11]) + 1)
@@ -69,9 +67,6 @@ class IdeasTestCase(TestCase):
                     idea[attribute], prev_attribute, 'Ideas are not sorted by ' + sort_by + ' ' + attribute
                 )
             prev_attribute = idea[attribute]
-
-    def test_idea_get_likes(self):
-        self.check_sorted_json_response('likes', 'likes', self.assertLessEqual)
 
     def test_idea_get_newest(self):
         self.check_sorted_json_response('newest', 'date', self.assertLessEqual)

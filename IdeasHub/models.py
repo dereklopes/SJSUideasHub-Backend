@@ -86,14 +86,24 @@ class Category(models.Model):
 
 class Comment(models.Model):
     commentid = models.AutoField(db_column='commentId', primary_key=True)  # Field name made lowercase.
-
     ideaId = models.ForeignKey('Idea', models.DO_NOTHING, db_column='ideaId')  # Field name made lowercase.
     comment = models.CharField(max_length=200)
     author = models.CharField(max_length=100, blank=True, null=True)
+    likes = models.ManyToManyField('CommentLike')
 
     class Meta:
         managed = True
-        db_table = 'comment'
+        db_table = 'comments'
+
+
+class CommentLike(models.Model):
+    user = models.ForeignKey('User', on_delete=models.DO_NOTHING, db_column='user_id')
+    comment_id = models.ForeignKey('Comment', on_delete=models.DO_NOTHING, db_column='commentId')
+
+    class Meta:
+        managed = True
+        db_table = 'comment_likes'
+        unique_together = (("user", "comment_id"),)
 
 
 class DjangoAdminLog(models.Model):
@@ -146,9 +156,30 @@ class Idea(models.Model):
     content = models.TextField()
     date = models.DateField()
     category = models.CharField(max_length=50)
-    likes = models.IntegerField()
+    likes = models.ManyToManyField('IdeaLike', default=None)
     author = models.CharField(max_length=100)
 
     class Meta:
         managed = True
-        db_table = 'idea'
+        db_table = 'ideas'
+
+
+class IdeaLike(models.Model):
+    user = models.ForeignKey('User', on_delete=models.DO_NOTHING, db_column='user_id')
+    idea_id = models.ForeignKey('Idea', on_delete=models.DO_NOTHING, db_column='ideaId')
+
+    class Meta:
+        managed = True
+        db_table = 'idea_likes'
+        unique_together = (('user', 'idea_id'),)
+
+
+class User(models.Model):
+    user_id = models.AutoField(db_column='user_id', primary_key=True)
+    name = models.CharField(db_column='name', max_length=50)
+    email = models.EmailField(db_column='email')
+
+    class Meta:
+        managed = True
+        db_table = 'users'
+        unique_together = (('user_id', 'email'),)

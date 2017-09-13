@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^comments/', views.CommnentList.as_view()),
     url(r'^authorize/', views.AuthorizeToken),
     url(r'^categories/', views.CategoriesList),
+    url(r'^likes/idea/', views.LikeIdea),
+    url(r'^user/', views.Users),
     # url(r'^user/', views.UserList.as_view())
 ]
 
